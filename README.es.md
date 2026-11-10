@@ -5,6 +5,7 @@
 Instaboost es un cliente ligero de Instagram para Android. Envuelve el sitio web móvil de Instagram y le añade ajustes y un mejor visor de reels.
 
 [![Última versión](https://img.shields.io/github/v/release/Ufoex/Instaboost?label=descargar)](https://github.com/Ufoex/Instaboost/releases/latest)
+[![Descargas](https://img.shields.io/github/downloads/Ufoex/Instaboost/total?label=descargas)](https://github.com/Ufoex/Instaboost/releases)
 
 ## Funciones
 
