@@ -976,3 +976,8 @@ window.igHide = (el) => {
     document.addEventListener('touchend', up, opts);
     document.addEventListener('touchcancel', up, opts);
 })();
+
+// A reel of the viewer that is an ad (it carries the "Sponsored" label). Only when the ad blocker is on: adblock.js sets
+// window.__igSkipAds.
+window.igIsAd = (it) => !!(window.__igSkipAds && window.IG_SPONSORED && it &&
+    [...it.querySelectorAll('span')].some(s => !s.children.length && window.IG_SPONSORED.test(s.textContent.trim())));

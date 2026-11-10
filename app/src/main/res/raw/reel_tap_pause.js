@@ -21,13 +21,13 @@
   if (mutedDesc && mutedDesc.set) {
     Object.defineProperty(HTMLMediaElement.prototype, 'muted', {
       configurable: true, enumerable: mutedDesc.enumerable, get: mutedDesc.get,
-      set(v) { mutedDesc.set.call(this, inReel() && this === centerVideo() ? false : v); }
+      set(v) { const c = inReel() && this === centerVideo() && !(window.igIsAd && window.igIsAd(this.closest('.vertically-snappable'))); mutedDesc.set.call(this, c ? false : v); }
     });
   }
   const soundOn = () => {
     if (!inReel()) return;
     const c = centerVideo();
-    if (c && c.muted) c.muted = false;
+    if (c && c.muted && !(window.igIsAd && window.igIsAd(c.closest('.vertically-snappable')))) c.muted = false;
     // anything but the reel on screen that is still playing with sound is silenced
     document.querySelectorAll('video').forEach(v => { if (v !== c && !v.paused && !v.muted) v.muted = true; });
   };

@@ -27,6 +27,8 @@ class PageBridges(
     val bgAudio: BackgroundAudioWebView.Bridge? = null,
     // "Share via..." in Facebook's share sheet: a Facebook link to hand to the Android share sheet.
     val share: ((String) -> Unit)? = null,
+    // A quick swipe made with real touch events (1 = up, to the next reel; -1 = down), asked for by the reels script.
+    val swipe: ((Int) -> Unit)? = null,
 )
 
 /**
@@ -78,6 +80,7 @@ fun dispatchPageMessage(data: String, bridges: PageBridges): Boolean {
             Thread { clipboard.copyImageToClipboard(image, type) }.start()
         }
         "bgAudio" -> bridges.bgAudio?.set(msg.optBoolean("on")) ?: return false
+        "swipe" -> (bridges.swipe ?: return false)(if (msg.optInt("dir") >= 0) 1 else -1)
         "shareLink" -> {
             val share = bridges.share ?: return false
             val url = msg.optString("url")

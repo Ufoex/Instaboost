@@ -16,7 +16,8 @@
 - Fix: the download button now downloads the reel on screen in the reels viewer, even if the address lags behind.
 - Fix: the reel buttons no longer step aside and back while you swipe between reels.
 - The download button now shows only when a video or post is open (reels, posts, stories), not in the feed.
-- Swiping reels: the reel follows your finger the whole way and only changes when you let go (Instagram changed it by itself halfway through, with your finger still down). The current reel fades out as the next one, which starts dark, is revealed. A short drag comes back; a long or quick one changes reel.
+- Swiping reels: a slow drag no longer changes the reel halfway with your finger still down; the current reel fades out as the next one is revealed. A quick flick still changes reel natively.
+- Ads in the reels viewer (marked "Sponsored") are now hidden, never unmute and are skipped automatically.
 - Fix: auto-scroll no longer moves the list while your finger is on it, which made a reel jump to the next one halfway through a swipe and could leave the viewer stuck between two reels. A viewer left between two reels now realigns by itself.
 
 <!-- lang:es -->
@@ -35,5 +36,6 @@
 - Corrección: en el visor de reels el botón de descarga ahora baja el reel que está en pantalla, aunque la dirección vaya atrasada.
 - Corrección: los botones del visor ya no se corren a un lado y regresan mientras deslizas entre reels.
 - El botón de descarga ahora solo aparece al abrir un video o una publicación (reels, publicaciones, historias), no en el feed.
-- Deslizar reels: el reel sigue tu dedo todo el recorrido y solo cambia cuando sueltas (Instagram lo cambiaba solo a la mitad, con tu dedo todavía en la pantalla). El reel actual se desvanece mientras el siguiente, que empieza oscuro, se va revelando. Un arrastre corto regresa; uno largo o rápido cambia de reel.
+- Deslizar reels: un arrastre lento ya no cambia el reel a la mitad con el dedo todavía abajo; el reel actual se desvanece mientras se revela el siguiente. Un golpe rápido sigue cambiando de reel de forma nativa.
+- Los anuncios del visor de reels (marcados «Publicidad») ahora se ocultan, nunca activan el sonido y se saltan solos.
 - Corrección: el desplazamiento automático ya no mueve la lista mientras tienes el dedo en la pantalla, lo que hacía saltar al siguiente reel a la mitad de un deslizamiento y podía dejar el visor atorado entre dos reels. Un visor que queda entre dos reels ahora se realinea solo.

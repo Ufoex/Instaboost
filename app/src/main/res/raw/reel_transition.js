@@ -1,136 +1,71 @@
-// Swiping between reels, done here instead of by Instagram:
-//  - The reel follows the finger the whole way and only changes when the finger lifts (Instagram changes it by
-//    itself as soon as the drag passes half the screen, even with the finger still down).
-//  - The reels fade as they move: the one leaving dims and the next one brightens with the distance dragged.
-//  - On release it goes to the next (or previous) reel if the drag was long enough or fast enough, else it comes back.
-// It works through res/raw/early_gate.js, which runs before Instagram's scripts and asks window.__igGate (below) first
-// for every pointer event; the touches this script takes are hidden from Instagram. Touches that start on a text field,
-// the seek bar, a dialog or one of our buttons are left to Instagram, and taps still produce clicks. Without the early
-// script (an old WebView) Instagram keeps its own swipe and only the fade is added.
-// After a change the address bar is made to match the reel on screen, and a viewer left between two reels realigns.
+// Swiping between reels. Instagram does every change itself (it keeps its own idea of which reel is current, so moving the
+// list from here puts it out of step: the address stops following, going back stops working). This script only
+//  - stops it from changing reel by itself halfway through a SLOW drag, with the finger still down: while the finger moves
+//    slowly, Instagram is shown a position that follows it 1:1 for the first part and then creeps towards (never reaching)
+//    half a reel. A quick flick (or a finger that speeds up) goes through untouched, and Instagram changes reel as it
+//    always did. This works through res/raw/early_gate.js, which runs before Instagram's scripts and calls
+//    window.__igGate (below) first for every pointer event; without it (an old WebView) nothing changes.
+//  - cross-fades the reels as they move: the one leaving becomes transparent while the next is revealed from dark.
+//  - hides the ads of the viewer (when the ad blocker is on), keeps them silent and swipes past one that comes to rest on
+//    the screen. The swipe is made by the app with real touch events (the page cannot make trusted ones).
+//  - realigns a viewer left between two reels.
 (function() {
   if (window.__igReelTransition) return;
   window.__igReelTransition = true;
 
-  const COMMIT_DIST = 0.28;     // fraction of a reel's height that is enough to change reel
-  const COMMIT_SPEED = 0.45;    // px per ms that is enough to change reel
-  const SLOP = 4;               // px of movement before a touch counts as a drag
+  const X1 = 0.40, X2 = 1.0, CAP = 0.49;    // fractions of a reel's height: 1:1 up to X1, then creeping towards CAP
+  const FLICK = 0.45;                        // px per ms: at least this fast and the touch is left to Instagram
   const inReel = () => /^\/reels?\//.test(location.pathname);
   const items = () => [...document.querySelectorAll('.vertically-snappable')];
-  const scrollerOf = (v) => { for (let p = v.parentElement; p && p !== document.body; p = p.parentElement) { if (p.scrollHeight > p.clientHeight + 50 && /auto|scroll/.test(getComputedStyle(p).overflowY)) return p; } return null; };
 
-  // A cross-fade with the distance dragged: the reel leaving becomes transparent as the one coming in is revealed from
-  // dark. t = how far the drag has gone as a fraction of a reel's height; both reach their end at about 85%.
-  const fadeIn = (t) => Math.max(0, Math.min(1, t * 1.18));
-  const fadeOut = (t) => Math.max(0, Math.min(1, 1 - t * 1.18));
-  const opacityFor = (p) => {                       // p = distance from rest as a fraction of the reel's height
-    const a = Math.abs(p);
-    return a <= 0.5 ? fadeOut(a) : fadeIn(1 - a);
+  // --- the gate: where Instagram thinks a slow finger is
+  let t = null;   // { y0, H, free, samples }
+  const setY = (e, y) => { ['clientY', 'pageY', 'screenY', 'y'].forEach(k => { try { Object.defineProperty(e, k, { value: y, configurable: true }); } catch (_) {} }); };
+  const perceived = (d, H) => {
+    const x = Math.min(1, Math.abs(d) / H);
+    const p = x <= X1 ? x : X1 + (x - X1) * ((CAP - X1) / (X2 - X1));
+    return Math.sign(d) * p * H;
   };
-
-  let g = null;   // the touch being followed
-
-  const eligible = (e) => {
-    if (!inReel()) return false;
-    if (e.clientX < 32 || e.clientX > innerWidth - 32) return false;                       // system back gesture
-    const el = e.target;
-    return !(el.closest && el.closest('input, textarea, select, [role="slider"], [role="dialog"], [role="menu"], [id^="mb-reel-"], #ib-download'));
-  };
-
-  const start = (e) => {
-    g = null;
-    if (!eligible(e)) return false;
-    const its = items();
-    let cur = null, cd = Infinity;
-    its.forEach(it => { const d = Math.abs(it.getBoundingClientRect().top); if (d < cd) { cd = d; cur = it; } });
-    if (!cur || cd > 4) return false;
-    const i = its.indexOf(cur);
-    const video = cur.querySelector('video');
-    g = { x0: e.clientX, y0: e.clientY, H: cur.getBoundingClientRect().height, cur, next: its[i + 1] || null, prev: its[i - 1] || null,
-          scroller: video && scrollerOf(video), active: false, dy: 0, samples: [[performance.now(), e.clientY]] };
-    return true;
-  };
-
-  const show = (dy) => {
-    const toward = dy < 0 ? g.next : g.prev;
-    const eff = toward ? dy : dy / 3;                           // no reel on that side: the drag resists
-    const setIt = (it, op) => {
-      it.style.transition = 'none';
-      it.style.setProperty('translate', '0 ' + eff + 'px');
-      it.style.setProperty('opacity', op.toFixed(2));
-    };
-    const t = Math.min(1, Math.abs(eff) / g.H);
-    setIt(g.cur, toward ? fadeOut(t) : 1);
-    if (toward) setIt(toward, fadeIn(t));
-  };
-
-  const move = (e) => {
-    if (!g) return false;
-    const dy = e.clientY - g.y0, dx = e.clientX - g.x0;
-    if (!g.active) {
-      if (Math.abs(dy) < SLOP && Math.abs(dx) < SLOP) return true;
-      if (Math.abs(dx) > Math.abs(dy)) { g = null; return false; }                        // sideways: not ours
-      g.active = true;
-    }
-    g.dy = Math.max(-g.H, Math.min(g.H, dy));
-    g.samples.push([performance.now(), e.clientY]);
-    if (g.samples.length > 6) g.samples.shift();
-    show(g.dy);
-    return true;
-  };
-
-  const settleBack = (s) => {
-    const targets = [s.cur, s.next, s.prev].filter(Boolean);
-    const coming = s.dy < 0 ? s.next : s.prev;
-    targets.forEach(it => {
-      it.style.transition = 'translate .18s ease-out, opacity .18s ease-out';
-      it.style.setProperty('translate', '0 0px');
-      if (it === coming) it.style.setProperty('opacity', '0'); else it.style.removeProperty('opacity');
-    });
-    setTimeout(() => targets.forEach(it => { it.style.removeProperty('transition'); it.style.removeProperty('translate'); it.style.removeProperty('opacity'); }), 220);
-  };
-
-  const end = (e, cancelled) => {
-    if (!g) return false;
-    const s = g; g = null;
-    if (!s.active) return true;
-    const now = performance.now();
-    const last = s.samples[s.samples.length - 1];
-    const old = s.samples.find(p => now - p[0] < 120) || s.samples[0];
-    const v = (last[1] - old[1]) / Math.max(1, last[0] - old[0]);                           // px per ms, negative = up
-    const dir = s.dy < 0 ? 1 : -1;                                                        // 1 = next reel, -1 = previous
-    const target = dir > 0 ? s.next : s.prev;
-    const far = Math.abs(s.dy) > COMMIT_DIST * s.H;
-    const fast = Math.abs(v) > COMMIT_SPEED && Math.sign(v) === Math.sign(s.dy);
-    if (cancelled || !target || !(far || fast) || !s.scroller) { settleBack(s); return true; }
-    // change: finish the move, then move the list by exactly one reel under it (no visible jump) and clear our marks
-    const delta = dir * s.H;
-    [s.cur, target].forEach(it => { it.style.transition = 'translate .16s ease-out, opacity .16s ease-out'; it.style.setProperty('translate', '0 ' + (-delta) + 'px'); });
-    s.cur.style.setProperty('opacity', '0'); target.style.setProperty('opacity', '1');
-    setTimeout(() => {
-      const sc = s.scroller;
-      [s.cur, s.next, s.prev].filter(Boolean).forEach(it => { it.style.transition = 'none'; it.style.removeProperty('translate'); it.style.removeProperty('opacity'); });
-      const behavior = sc.style.scrollBehavior; sc.style.scrollBehavior = 'auto';
-      sc.scrollTop = sc.scrollTop + delta;
-      sc.style.scrollBehavior = behavior;
-      setTimeout(() => [s.cur, s.next, s.prev].filter(Boolean).forEach(it => it.style.removeProperty('transition')), 30);
-    }, 170);
-    return true;
-  };
-
   window.__igGate = (e) => {
-    if (e.pointerType !== 'touch' || !e.isPrimary) return false;
-    switch (e.type) {
-      case 'pointerdown': return start(e);
-      case 'pointermove': return move(e);
-      case 'pointerup': return end(e, false);
-      case 'pointercancel': return end(e, true);
+    if (e.pointerType !== 'touch' || !e.isPrimary || !inReel()) return false;
+    if (e.type === 'pointerdown') {
+      t = null;
+      if (e.target.closest && e.target.closest('input, textarea, select, [role="slider"], [role="dialog"], [role="menu"], [id^="mb-reel-"], #ib-download')) return false;
+      let H = 0, bd = Infinity;
+      items().forEach(it => { const r = it.getBoundingClientRect(); if (Math.abs(r.top) < bd) { bd = Math.abs(r.top); H = r.height; } });
+      if (!H || bd > 4) return false;
+      t = { y0: e.clientY, H, free: false, moves: [] };
+      return false;
     }
+    if (!t) return false;
+    if (e.type === 'pointermove') {
+      const now = performance.now();
+      t.moves.push([now, e.clientY]);
+      if (t.moves.length > 6) t.moves.shift();
+      // Speed between moves only (the first jump after touching the screen always looks fast). A quick flick is
+      // Instagram's own: from then on this touch goes through untouched.
+      if (t.moves.length >= 3) {
+        const first = t.moves.find(p => now - p[0] < 100) || t.moves[0];
+        const v = (e.clientY - first[1]) / Math.max(1, now - first[0]);
+        if (first !== t.moves[t.moves.length - 1] && Math.abs(v) >= FLICK) t.free = true;
+      }
+      const d = e.clientY - t.y0;
+      if (!t.free && Math.abs(d) > X1 * t.H) setY(e, t.y0 + perceived(d, t.H));
+      return false;
+    }
+    if (!t.free && t.moves.length) {                                                     // slow release: shown where Instagram last saw it
+      const d = t.moves[t.moves.length - 1][1] - t.y0;
+      if (Math.abs(d) > X1 * t.H) setY(e, t.y0 + perceived(d, t.H));
+    }
+    t = null;
     return false;
   };
 
-  // --- without the early script Instagram keeps the swipe: only fade the reels with how far they are from rest
-  if (!window.__igGateInstalled) {
+  // --- the cross-fade: how much of a reel shows decides its brightness
+  const fadeIn = (visible) => Math.max(0, Math.min(1, visible * 1.18));
+  const fadeOut = (a) => Math.max(0, Math.min(1, 1 - a * 1.18));
+  const opacityFor = (p) => { const a = Math.abs(p); return a <= 0.5 ? fadeOut(a) : fadeIn(1 - a); };
+  {
     let raf = 0;
     const loop = () => {
       raf = 0;
@@ -146,39 +81,46 @@
     ['touchstart', 'touchmove', 'touchend', 'scroll'].forEach(n => document.addEventListener(n, () => { if (inReel() && !raf) raf = requestAnimationFrame(loop); }, { capture: true, passive: true }));
   }
 
-  // --- the address bar follows the reel on screen; a viewer left between two reels realigns
-  const touching = () => !!(window.__igTouch && (window.__igTouch.down || Date.now() - window.__igTouch.endAt < 900)) || !!g;
-  // Each reel has an overlay id "clipsoverlay<media id>_<user id>"; the code in the address is that media id written
-  // in Instagram's base-64 alphabet.
-  const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-  const codeOf = (it) => {
-    const o = it.querySelector('[id^="clipsoverlay"]');
-    const m = o && o.id.match(/^clipsoverlay(\d+)_/);
-    if (!m) return null;
-    let n = BigInt(m[1]), c = '';
-    while (n > 0n) { c = ALPHA[Number(n % 64n)] + c; n /= 64n; }
-    return c;
-  };
-  let lastTop = null, stableSince = 0, urlSince = 0, urlFor = null;
+  // --- ads of the viewer and a viewer left between two reels
+  const touching = () => !!(window.__igTouch && (window.__igTouch.down || Date.now() - window.__igTouch.endAt < 900));
+  let lastTop = null, stableSince = 0, prevIdx = null, lastDir = 1, lastSwipe = 0, swipedFrom = null;
   setInterval(() => {
-    if (!inReel() || touching()) { lastTop = null; urlSince = 0; return; }
+    if (!inReel()) return;
     const its = items();
     if (!its.length) return;
+    // Ads stay in the list (it measures their height) but are invisible, and nothing plays from them
+    if (window.__igSkipAds) {
+      its.forEach(it => {
+        const r = it.getBoundingClientRect();
+        if (r.bottom < -2 * r.height || r.top > innerHeight + 2 * r.height) return;
+        if (window.igIsAd(it)) {
+          it.__ibAd = true;
+          if (it.style.visibility !== 'hidden') it.style.setProperty('visibility', 'hidden', 'important');
+          const v = it.querySelector('video'); if (v && !v.paused) v.pause();
+        }
+      });
+    }
+    if (touching()) { lastTop = null; return; }
     let best = null, bd = Infinity;
     its.forEach(it => { const tp = it.getBoundingClientRect().top; if (Math.abs(tp) < bd) { bd = Math.abs(tp); best = it; } });
-    if (!best) return;
-    if (bd >= 3) {                                                                            // between two reels
-      if (lastTop === null || Math.abs(bd - lastTop) > 1) { lastTop = bd; stableSince = Date.now(); return; }
-      if (Date.now() - stableSince < 500) return;
-      lastTop = null;
-      best.scrollIntoView({ block: 'start', behavior: 'smooth' });
-      return;
+    if (best && bd < 3) {
+      const idx = its.indexOf(best);
+      if (prevIdx !== null && idx !== prevIdx) lastDir = idx > prevIdx ? 1 : -1;
+      prevIdx = idx;
+      if (swipedFrom && swipedFrom !== best) swipedFrom = null;                          // left that ad: forget the attempt
+      // an ad at rest: swipe on the way it was going (the other way if that already failed once, or there is nothing ahead)
+      if (best.__ibAd && Date.now() - lastSwipe > 1300 && window.InstaboostPage) {
+        const dir = swipedFrom === best ? -lastDir : lastDir;
+        const ok = its[idx + dir];
+        swipedFrom = best; lastSwipe = Date.now();
+        window.InstaboostPage.postMessage(JSON.stringify({ call: 'swipe', dir: ok ? dir : -dir }));
+        lastTop = null; return;
+      }
     }
+    if (!best || bd < 3) { lastTop = null; return; }
+    if (lastTop === null || Math.abs(bd - lastTop) > 1) { lastTop = bd; stableSince = Date.now(); return; }
+    if (Date.now() - stableSince < 500) return;                                          // give Instagram its own time to settle
     lastTop = null;
-    const code = codeOf(best);                                                                // aligned: make the address match
-    const cur = (location.pathname.match(/^\/reels?\/([\w-]+)/) || [])[1];
-    if (!code || code === cur) { urlSince = 0; return; }
-    if (urlFor !== code) { urlFor = code; urlSince = Date.now(); return; }
-    if (Date.now() - urlSince > 400) { history.replaceState(history.state, '', '/reels/' + code + '/'); urlSince = 0; }
+    best.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }, 250);
 })();

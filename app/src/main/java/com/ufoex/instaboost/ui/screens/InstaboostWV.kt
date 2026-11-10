@@ -46,6 +46,7 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberSaveableWebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.ufoex.instaboost.R
+import com.ufoex.instaboost.utils.swipeView
 import com.ufoex.instaboost.ui.components.NetworkErrorDialog
 import com.ufoex.instaboost.ui.components.settings.SettingsDialog
 import com.ufoex.instaboost.ui.viewmodel.MainViewModel
@@ -1371,6 +1372,7 @@ fun InstaboostWebView(
                         pip = PipBridge(onVideoPlayingChanged, onPipPageVisible),
                         clipboard = ClipboardBridge(context),
                         bgAudio = (this as? BackgroundAudioWebView)?.Bridge(),
+                        swipe = { dir -> swipeView(this, dir > 0) },
                         share = { link ->
                             // Called on the UI thread; the clean link goes to Android's share sheet.
                             val clean = fbRedirectSanitizer(link)
