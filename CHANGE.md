@@ -14,6 +14,7 @@
 - Fix: the feed no longer stops loading posts as you scroll: hiding posts (sponsored, suggested, reels, AI, people) keeps their place in the list instead of removing it, which is what made Instagram stop asking for more.
 - Fix: the download button no longer jumps from one side to the other in the feed.
 - Fix: the download button now downloads the reel on screen in the reels viewer, even if the address lags behind.
+- Fix: the reel buttons no longer step aside and back while you swipe between reels.
 - The download button now shows only when a video or post is open (reels, posts, stories), not in the feed.
 - Swiping reels: the reel follows your finger the whole way and only changes when you let go (Instagram changed it by itself halfway through, with your finger still down). The current reel fades out as the next one, which starts dark, is revealed. A short drag comes back; a long or quick one changes reel.
 - Fix: auto-scroll no longer moves the list while your finger is on it, which made a reel jump to the next one halfway through a swipe and could leave the viewer stuck between two reels. A viewer left between two reels now realigns by itself.
@@ -32,6 +33,7 @@
 - Corrección: el feed ya no deja de cargar publicaciones al bajar: al ocultar publicaciones (patrocinadas, sugeridas, reels, de IA, personas) conservan su lugar en la lista en vez de quitarse, que era lo que hacía que Instagram dejara de pedir más.
 - Corrección: el botón de descarga ya no salta de un lado a otro en el feed.
 - Corrección: en el visor de reels el botón de descarga ahora baja el reel que está en pantalla, aunque la dirección vaya atrasada.
+- Corrección: los botones del visor ya no se corren a un lado y regresan mientras deslizas entre reels.
 - El botón de descarga ahora solo aparece al abrir un video o una publicación (reels, publicaciones, historias), no en el feed.
 - Deslizar reels: el reel sigue tu dedo todo el recorrido y solo cambia cuando sueltas (Instagram lo cambiaba solo a la mitad, con tu dedo todavía en la pantalla). El reel actual se desvanece mientras el siguiente, que empieza oscuro, se va revelando. Un arrastre corto regresa; uno largo o rápido cambia de reel.
 - Corrección: el desplazamiento automático ya no mueve la lista mientras tienes el dedo en la pantalla, lo que hacía saltar al siguiente reel a la mitad de un deslizamiento y podía dejar el visor atorado entre dos reels. Un visor que queda entre dos reels ahora se realinea solo.

@@ -657,6 +657,12 @@
         return top === Infinity ? null : { top, left };
     };
     const dodge = (items, v) => {
+        // While the reels are being swiped (a finger on the screen, just lifted, or the reel not yet at rest) the original
+        // icons travel with the reel and pass behind our column: it stays where it is instead of stepping aside and back.
+        const it0 = v && v.closest('.vertically-snappable');
+        const swiping = (window.__igTouch && (window.__igTouch.down || Date.now() - window.__igTouch.endAt < 700)) ||
+            (it0 && Math.abs(it0.getBoundingClientRect().top) > 3);
+        if (swiping) return;
         let dx = 0;
         if (!editing && !hideOn) {
             const rail = railRect(v);
