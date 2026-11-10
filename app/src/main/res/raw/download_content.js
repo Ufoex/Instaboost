@@ -86,14 +86,15 @@
   btn.addEventListener('click', (e) => { e.stopPropagation(); download(); });
   document.body.appendChild(btn);
 
-  // Elsewhere it floats at the bottom right, clear of the tab bar. On reels it joins the other reel
+  // On posts and stories it floats at the bottom right, clear of the tab bar. On reels it joins the other reel
   // buttons: reel_controls.js lays them out in a column, lets you move them (hold one) and keeps
   // the layout, once this button is marked "visible".
   const place = () => {
     const p = location.pathname;
     const signedIn = !!document.querySelector('a[href="/direct/inbox/"]');
     const onReels = /^\/reels?\//.test(p);
-    const media = signedIn && (p === '/' || onReels || /^\/(p|tv|stories)\//.test(p));
+    // Only where a video (or post) is open: not in the feed or the other menus.
+    const media = signedIn && (onReels || /^\/(p|tv|stories)\//.test(p));
     btn.style.display = media ? 'flex' : 'none';
     btn.classList.toggle('visible', onReels);
     if (onReels) { btn.style.bottom = 'auto'; return; }   // position: reel_controls.js

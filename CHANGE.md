@@ -13,6 +13,7 @@
 - Fix: changing reels quickly (for example right after opening a video from the feed) no longer leaves the previous reel's audio playing under the new one.
 - Fix: the feed no longer stops loading posts as you scroll: hiding posts (sponsored, suggested, reels, AI, people) keeps their place in the list instead of removing it, which is what made Instagram stop asking for more.
 - Fix: the download button no longer jumps from one side to the other in the feed.
+- The download button now shows only when a video or post is open (reels, posts, stories), not in the feed.
 
 <!-- lang:es -->
 ### Novedades
@@ -27,3 +28,4 @@
 - Corrección: cambiar de reel rápido (por ejemplo justo después de abrir un video del feed) ya no deja el audio del reel anterior sonando debajo del nuevo.
 - Corrección: el feed ya no deja de cargar publicaciones al bajar: al ocultar publicaciones (patrocinadas, sugeridas, reels, de IA, personas) conservan su lugar en la lista en vez de quitarse, que era lo que hacía que Instagram dejara de pedir más.
 - Corrección: el botón de descarga ya no salta de un lado a otro en el feed.
+- El botón de descarga ahora solo aparece al abrir un video o una publicación (reels, publicaciones, historias), no en el feed.
