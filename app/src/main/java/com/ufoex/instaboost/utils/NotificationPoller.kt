@@ -102,5 +102,8 @@ private fun postAlert(context: Context, id: Int, text: Int, url: String) {
         .setContentIntent(open)
         .setAutoCancel(true)
         .build()
+    // Without the notifications permission (Android 13+) there is nothing to show.
+    if (android.os.Build.VERSION.SDK_INT >= 33 &&
+        context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) return
     runCatching { NotificationManagerCompat.from(context).notify(id, n) }.onFailure { Log.d("NotifPoll", "notify failed: $it") }
 }
