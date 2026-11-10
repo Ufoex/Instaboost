@@ -2,6 +2,12 @@
 
 [English](README.md) · **Español**
 
+## 🙋 ¿Tienes un problema o una sugerencia?
+
+Cuéntanos: abre un issue y describe qué pasó o qué te gustaría.
+
+[![Abrir un issue](https://img.shields.io/badge/Abrir%20un%20issue-D73A4A?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ufoex/Instaboost/issues/new/choose)
+
 Instaboost es un cliente ligero de Instagram para Android. Envuelve el sitio web móvil de Instagram y le añade ajustes y un mejor visor de reels.
 
 [![Última versión](https://img.shields.io/github/v/release/Ufoex/Instaboost?label=descargar)](https://github.com/Ufoex/Instaboost/releases/latest)
