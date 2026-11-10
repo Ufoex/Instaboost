@@ -14,6 +14,8 @@
 - Fix: the feed no longer stops loading posts as you scroll: hiding posts (sponsored, suggested, reels, AI, people) keeps their place in the list instead of removing it, which is what made Instagram stop asking for more.
 - Fix: the download button no longer jumps from one side to the other in the feed.
 - The download button now shows only when a video or post is open (reels, posts, stories), not in the feed.
+- Reels fade while you swipe: the one leaving dims and the next one brightens with your finger, and both are at full brightness when they settle.
+- Fix: auto-scroll no longer moves the list while your finger is on it, which made a reel jump to the next one halfway through a swipe and could leave the viewer stuck between two reels. A viewer left between two reels now realigns by itself.
 
 <!-- lang:es -->
 ### Novedades
@@ -29,3 +31,5 @@
 - Corrección: el feed ya no deja de cargar publicaciones al bajar: al ocultar publicaciones (patrocinadas, sugeridas, reels, de IA, personas) conservan su lugar en la lista en vez de quitarse, que era lo que hacía que Instagram dejara de pedir más.
 - Corrección: el botón de descarga ya no salta de un lado a otro en el feed.
 - El botón de descarga ahora solo aparece al abrir un video o una publicación (reels, publicaciones, historias), no en el feed.
+- Los reels se desvanecen al deslizar: el que sale se atenúa y el siguiente se aclara con tu dedo, y ambos quedan a brillo completo al asentarse.
+- Corrección: el desplazamiento automático ya no mueve la lista mientras tienes el dedo en la pantalla, lo que hacía saltar al siguiente reel a la mitad de un deslizamiento y podía dejar el visor atorado entre dos reels. Un visor que queda entre dos reels ahora se realinea solo.

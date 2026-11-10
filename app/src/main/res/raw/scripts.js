@@ -965,3 +965,14 @@ window.igHide = (el) => {
     el.style.setProperty('pointer-events', 'none', 'important');
     if (h) el.style.setProperty('margin-bottom', (-h) + 'px', 'important');
 };
+
+// Finger state shared by the reel scripts: window.__igTouch = { down, endAt }.
+(() => {
+    if (window.__igTouch) return;
+    const T = window.__igTouch = { down: false, endAt: 0 };
+    const opts = { capture: true, passive: true };
+    document.addEventListener('touchstart', (e) => { T.down = e.touches.length > 0; }, opts);
+    const up = (e) => { T.down = e.touches.length > 0; T.endAt = Date.now(); };
+    document.addEventListener('touchend', up, opts);
+    document.addEventListener('touchcancel', up, opts);
+})();
