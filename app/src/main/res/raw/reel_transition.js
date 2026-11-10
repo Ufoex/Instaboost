@@ -19,12 +19,13 @@
   const items = () => [...document.querySelectorAll('.vertically-snappable')];
   const scrollerOf = (v) => { for (let p = v.parentElement; p && p !== document.body; p = p.parentElement) { if (p.scrollHeight > p.clientHeight + 50 && /auto|scroll/.test(getComputedStyle(p).overflowY)) return p; } return null; };
 
-  // Brightness of a reel by how much of it is on screen. The reel leaving stays as it is; the one coming in starts
-  // dark and is revealed as it shows (full brightness once about 85% of it is visible).
-  const fadeIn = (visible) => Math.max(0, Math.min(1, visible * 1.18));
+  // A cross-fade with the distance dragged: the reel leaving becomes transparent as the one coming in is revealed from
+  // dark. t = how far the drag has gone as a fraction of a reel's height; both reach their end at about 85%.
+  const fadeIn = (t) => Math.max(0, Math.min(1, t * 1.18));
+  const fadeOut = (t) => Math.max(0, Math.min(1, 1 - t * 1.18));
   const opacityFor = (p) => {                       // p = distance from rest as a fraction of the reel's height
     const a = Math.abs(p);
-    return a <= 0.5 ? 1 : fadeIn(1 - a);
+    return a <= 0.5 ? fadeOut(a) : fadeIn(1 - a);
   };
 
   let g = null;   // the touch being followed
@@ -58,8 +59,9 @@
       it.style.setProperty('translate', '0 ' + eff + 'px');
       it.style.setProperty('opacity', op.toFixed(2));
     };
-    setIt(g.cur, 1);
-    if (toward) setIt(toward, fadeIn(Math.min(1, Math.abs(eff) / g.H)));
+    const t = Math.min(1, Math.abs(eff) / g.H);
+    setIt(g.cur, toward ? fadeOut(t) : 1);
+    if (toward) setIt(toward, fadeIn(t));
   };
 
   const move = (e) => {
@@ -104,7 +106,7 @@
     // change: finish the move, then move the list by exactly one reel under it (no visible jump) and clear our marks
     const delta = dir * s.H;
     [s.cur, target].forEach(it => { it.style.transition = 'translate .16s ease-out, opacity .16s ease-out'; it.style.setProperty('translate', '0 ' + (-delta) + 'px'); });
-    target.style.setProperty('opacity', '1');
+    s.cur.style.setProperty('opacity', '0'); target.style.setProperty('opacity', '1');
     setTimeout(() => {
       const sc = s.scroller;
       [s.cur, s.next, s.prev].filter(Boolean).forEach(it => { it.style.transition = 'none'; it.style.removeProperty('translate'); it.style.removeProperty('opacity'); });
