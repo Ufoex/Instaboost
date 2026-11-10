@@ -10,6 +10,7 @@
 - Download photos, carousels and reels (Instagram's own file, with sound).
 - Direct messages in their own layer, app lock, share to the app, shortcuts, Material You and AMOLED black.
 - Updates: the app checks GitHub for a new version and shows these notes in English or Spanish.
+- Fix: changing reels quickly (for example right after opening a video from the feed) no longer leaves the previous reel's audio playing under the new one.
 
 <!-- lang:es -->
 ### Novedades
@@ -21,3 +22,4 @@
 - Descarga fotos, carruseles y reels (el archivo de Instagram, con sonido).
 - Mensajes directos en su propia capa, bloqueo de la app, compartir hacia la app, accesos directos, Material You y negro AMOLED.
 - Actualizaciones: la app busca en GitHub una versión nueva y muestra estas notas en español o inglés.
+- Corrección: cambiar de reel rápido (por ejemplo justo después de abrir un video del feed) ya no deja el audio del reel anterior sonando debajo del nuevo.

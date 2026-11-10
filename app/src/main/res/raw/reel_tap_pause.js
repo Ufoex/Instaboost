@@ -13,24 +13,27 @@
     return null;
   };
 
-  // --- sound always on: Instagram starts reels muted and its tap toggles the sound. Muting is simply not
-  // allowed on a reel page: the `muted = true` assignment is ignored, so the sound never goes off.
+  // --- sound always on, for the reel on screen: Instagram starts reels muted and its tap toggles the sound.
+  // A reel in the viewer cannot be muted while it is the one on screen (the `muted = true` assignment is ignored).
+  // The reels around it are left as Instagram has them (muted and paused): unmuting those too made the reel
+  // that was just left, or one loaded ahead, play under the new one.
   const mutedDesc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'muted');
   if (mutedDesc && mutedDesc.set) {
     Object.defineProperty(HTMLMediaElement.prototype, 'muted', {
       configurable: true, enumerable: mutedDesc.enumerable, get: mutedDesc.get,
-      set(v) { mutedDesc.set.call(this, inReel() ? false : v); }
+      set(v) { mutedDesc.set.call(this, inReel() && this === centerVideo() ? false : v); }
     });
   }
-  // (and, as a safety net, anything that still ends up muted is put back at once)
-  document.addEventListener('volumechange', (e) => {
-    const v = e.target;
-    if (inReel() && v instanceof HTMLVideoElement && v.muted) v.muted = false;
-  }, true);
-  setInterval(() => {
+  const soundOn = () => {
     if (!inReel()) return;
-    document.querySelectorAll('video').forEach(v => { if (v.muted) v.muted = false; });
-  }, 300);
+    const c = centerVideo();
+    if (c && c.muted) c.muted = false;
+    // anything but the reel on screen that is still playing with sound is silenced
+    document.querySelectorAll('video').forEach(v => { if (v !== c && !v.paused && !v.muted) v.muted = true; });
+  };
+  document.addEventListener('volumechange', soundOn, true);
+  document.addEventListener('play', soundOn, true);
+  setInterval(soundOn, 300);
 
   // --- the badge shown in the middle: our pause / play icon. Instagram flashes a volume icon there on
   // every tap (its tap toggles the sound), which is wrong now, so that one is hidden for a moment

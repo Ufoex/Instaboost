@@ -128,7 +128,12 @@
         // Starting at a screen edge = the system back gesture: it takes the touch without sending moves.
         if (t.clientX < EDGE || t.clientX > innerWidth - EDGE) { st = null; return; }
         st = { x: t.clientX, y: t.clientY, t0: Date.now(), v, held: false, moved: false, target: e.target, wasPaused: v.paused };
-        holdGuard = Date.now() + 8000;   // a finger on a reel: ignore Instagram's hold-to-pause (8 s at most)
+        // Instagram pauses a held reel after ~0.3 s. The guard that ignores that pause is armed only once the finger
+        // has stayed still for 200 ms: a tap or a swipe never has it, so the pause Instagram makes when a reel
+        // leaves the screen always goes through (an ignored one left the old reel playing under the new one).
+        holdGuard = 0;
+        const armed = st;
+        setTimeout(() => { if (st === armed && !armed.moved) holdGuard = Date.now() + 8000; }, 200);
         st.timer = setTimeout(() => {
             if (!st || st.moved) return;
             st.held = true;
@@ -156,7 +161,7 @@
     }, { capture: true, passive: true });
 
     document.addEventListener('touchend', (e) => {
-        holdGuard = Date.now() + 150;
+        holdGuard = 0;
         const s = st; st = null;
         if (!s) return;
         clearTimeout(s.timer); clearInterval(s.dog);
@@ -193,7 +198,7 @@
     // so drop the hold here. Our own synthetic touchcancel (above) is not trusted and is ignored.
     document.addEventListener('touchcancel', (e) => {
         if (!e.isTrusted) return;
-        holdGuard = Date.now() + 150;
+        holdGuard = 0;
         const s = st; st = null;
         if (!s) return;
         clearTimeout(s.timer); clearInterval(s.dog);
