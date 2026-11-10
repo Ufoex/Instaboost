@@ -869,8 +869,8 @@
             if (light !== true && Date.now() - barChangedAt > 500) { dodge(items, active); centerVideos(); markIcons(active); }
         } else {
             if (editing) endEdit(false);
-            const dl0 = document.getElementById(DLID);
-            if (dl0) { dl0.style.left = dl0.style.top = dl0.style.right = dl0.style.zIndex = ''; }
+            // Outside the reels the download button is placed by download_content.js alone: clearing its position
+            // here as well made the two scripts take turns and the button jumped from one side to the other.
             if (hideBtn) hideBtn.style.display = 'none';
             if (fitBtn) fitBtn.style.display = 'none';
             if (autoBtn) autoBtn.style.display = 'none';

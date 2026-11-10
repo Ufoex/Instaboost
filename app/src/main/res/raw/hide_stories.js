@@ -4,7 +4,7 @@ igWatch(() => {
     const prev = p.previousElementSibling;
     if (prev && prev.offsetHeight > 80 && prev.offsetHeight < 220 &&
         prev.querySelectorAll('[role="button"] canvas, [role="button"] img').length >= 2) {
-      prev.style.display = 'none';
+      igHide(prev);
       return;
     }
   }

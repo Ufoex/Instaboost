@@ -953,3 +953,15 @@ window.igScroller = (v) => {
     }
     return null;
 };
+
+// Hide a post (or any block of the feed) WITHOUT display:none. Instagram's feed only asks for more posts while its
+// list measures the posts it has rendered: a post set to display:none stops that, and the feed stops loading as you
+// scroll. So the block stays in the layout, invisible, and a negative margin takes its room back.
+window.igHide = (el) => {
+    if (!el || el.__ibHidden) return;
+    el.__ibHidden = true;
+    const h = el.offsetHeight;
+    el.style.setProperty('visibility', 'hidden', 'important');
+    el.style.setProperty('pointer-events', 'none', 'important');
+    if (h) el.style.setProperty('margin-bottom', (-h) + 'px', 'important');
+};

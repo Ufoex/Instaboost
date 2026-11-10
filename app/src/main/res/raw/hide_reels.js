@@ -5,5 +5,5 @@ igWatch(() => {
     while (p.parentElement && p.parentElement.children.length < 4 && p.parentElement !== document.body) p = p.parentElement;
     p.style.display = 'none';
   });
-  document.querySelectorAll('article').forEach(a => { if (a.querySelector('a[href*="/reel/"]')) a.style.display = 'none'; });
+  document.querySelectorAll('article').forEach(a => { if (a.querySelector('a[href*="/reel/"]')) igHide(a); });
 });
