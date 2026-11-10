@@ -19,12 +19,12 @@
   const items = () => [...document.querySelectorAll('.vertically-snappable')];
   const scrollerOf = (v) => { for (let p = v.parentElement; p && p !== document.body; p = p.parentElement) { if (p.scrollHeight > p.clientHeight + 50 && /auto|scroll/.test(getComputedStyle(p).overflowY)) return p; } return null; };
 
-  // Brightness of a reel when it is p (a fraction of its height, 0 = at rest) away from its place: the one with most of
-  // the screen dims as it leaves, the one coming in brightens as it enters.
-  const opacityFor = (p) => {
+  // Brightness of a reel by how much of it is on screen. The reel leaving stays as it is; the one coming in starts
+  // dark and is revealed as it shows (full brightness once about 85% of it is visible).
+  const fadeIn = (visible) => Math.max(0, Math.min(1, visible * 1.18));
+  const opacityFor = (p) => {                       // p = distance from rest as a fraction of the reel's height
     const a = Math.abs(p);
-    if (a < 0.01) return 1;
-    return Math.max(0.1, Math.min(1, a <= 0.5 ? 1 - 1.6 * a : 1.6 * (1 - a)));
+    return a <= 0.5 ? 1 : fadeIn(1 - a);
   };
 
   let g = null;   // the touch being followed
@@ -53,14 +53,13 @@
   const show = (dy) => {
     const toward = dy < 0 ? g.next : g.prev;
     const eff = toward ? dy : dy / 3;                           // no reel on that side: the drag resists
-    const setIt = (it, off, restTop) => {
-      if (!it) return;
+    const setIt = (it, op) => {
       it.style.transition = 'none';
-      it.style.setProperty('translate', '0 ' + off + 'px');
-      it.style.setProperty('opacity', opacityFor(restTop === undefined ? off / g.H : (restTop + off) / g.H).toFixed(2));
+      it.style.setProperty('translate', '0 ' + eff + 'px');
+      it.style.setProperty('opacity', op.toFixed(2));
     };
-    setIt(g.cur, eff);
-    if (toward) setIt(toward, eff, dy < 0 ? g.H : -g.H);
+    setIt(g.cur, 1);
+    if (toward) setIt(toward, fadeIn(Math.min(1, Math.abs(eff) / g.H)));
   };
 
   const move = (e) => {
@@ -80,8 +79,13 @@
 
   const settleBack = (s) => {
     const targets = [s.cur, s.next, s.prev].filter(Boolean);
-    targets.forEach(it => { it.style.transition = 'translate .18s ease-out, opacity .18s ease-out'; it.style.setProperty('translate', '0 0px'); it.style.removeProperty('opacity'); });
-    setTimeout(() => targets.forEach(it => { it.style.removeProperty('transition'); it.style.removeProperty('translate'); }), 220);
+    const coming = s.dy < 0 ? s.next : s.prev;
+    targets.forEach(it => {
+      it.style.transition = 'translate .18s ease-out, opacity .18s ease-out';
+      it.style.setProperty('translate', '0 0px');
+      if (it === coming) it.style.setProperty('opacity', '0'); else it.style.removeProperty('opacity');
+    });
+    setTimeout(() => targets.forEach(it => { it.style.removeProperty('transition'); it.style.removeProperty('translate'); it.style.removeProperty('opacity'); }), 220);
   };
 
   const end = (e, cancelled) => {
@@ -100,7 +104,7 @@
     // change: finish the move, then move the list by exactly one reel under it (no visible jump) and clear our marks
     const delta = dir * s.H;
     [s.cur, target].forEach(it => { it.style.transition = 'translate .16s ease-out, opacity .16s ease-out'; it.style.setProperty('translate', '0 ' + (-delta) + 'px'); });
-    s.cur.style.setProperty('opacity', '0.1'); target.style.setProperty('opacity', '1');
+    target.style.setProperty('opacity', '1');
     setTimeout(() => {
       const sc = s.scroller;
       [s.cur, s.next, s.prev].filter(Boolean).forEach(it => { it.style.transition = 'none'; it.style.removeProperty('translate'); it.style.removeProperty('opacity'); });
