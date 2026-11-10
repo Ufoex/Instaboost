@@ -1,0 +1,12 @@
+Instaboost es un cliente ligero de Instagram basado en el sitio web móvil de Instagram.
+
+Ajustes opcionales:
+<ul>
+    <li>Colores Material You y negro AMOLED</li>
+    <li>Bloquea publicaciones patrocinadas y rastreadores</li>
+    <li>Oculta historias, publicaciones sugeridas, personas sugeridas, Reels y publicaciones con etiqueta de IA</li>
+    <li>Visor de reels: tocar para pausar, mantener para acelerar, doble toque para dar me gusta o saltar, desplazamiento automático, sonido siempre activo, columna de botones movible y barra de progreso</li>
+    <li>Descarga fotos, carruseles y reels</li>
+    <li>Mensajes directos de Instagram en su propia capa</li>
+    <li>Bloqueo de la app, compartir hacia la app, accesos directos y búsqueda de actualizaciones</li>
+</ul>

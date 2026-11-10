@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Auto Backup rules for Android 11 and lower (API 23-30), also used by `adb backup`.
+   Only the settings DataStore is backed up. Everything else in the data dir stays on the
+   device, in particular the WebView's profile (app_webview/), which holds the Instagram
+   session cookies. With an <include>, anything not listed is excluded.
+   Android 12+ uses data_extraction_rules.xml instead.
+-->
+<full-backup-content>
+    <include domain="file" path="datastore/" />
+</full-backup-content>

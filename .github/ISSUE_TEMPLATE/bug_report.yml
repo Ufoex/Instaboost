@@ -1,0 +1,57 @@
+name: 🐞 Bug Report
+description: Report an issue or unexpected behavior
+labels: ["bug"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Before You Begin
+      description: |
+        Please complete the following before submitting a bug report:
+      options:
+        - label: I am using the latest version of Instaboost.
+          required: true
+        - label: I have searched for existing issues related to this bug.
+          required: true
+        - label: This issue is specific to Instaboost, i.e., not a bug of Instagram.
+          required: true
+          
+  - type: input
+    id: device_info
+    attributes:
+      label: Device Info
+      placeholder: e.g. Samsung Galaxy A52, Android 13
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      placeholder: |
+        Clearly describe the issue. What’s going wrong?
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Go to '...'
+        2. Tap on '...'
+        3. Scroll down to '...'
+        4. See the error
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots
+      placeholder: |
+        If applicable, attach screenshots
+    validations:
+      required: false

@@ -1,0 +1,27 @@
+*.iml
+*.orig
+.gradle
+.kotlin
+.idea
+/local.properties
+/.idea
+.DS_Store
+/app/release
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Android build outputs
+/build/
+/app/build/
+*.apk
+.vscode/settings.json
+jacoco-debug.log
+
+# Signing keys
+*.jks
+*.keystore
+
+# Release signing and local files
+*.b64

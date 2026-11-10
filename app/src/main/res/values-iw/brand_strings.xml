@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Instaboost</string>
+    <string name="network_error_description">כדי להשתמש ב-Instaboost, יש להפעיל נתונים ניידים או להתחבר ל-Wi-Fi.</string>
+    <string name="instaboost_settings">הגדרות Instaboost</string>
+</resources>

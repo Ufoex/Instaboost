@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Instaboost</string>
+    <string name="network_error_description">Per utilizzare Instaboost, attiva i dati mobili o connettiti al Wi-Fi.</string>
+    <string name="instaboost_settings">Impostazioni Instaboost</string>
+</resources>
