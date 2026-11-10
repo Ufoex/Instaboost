@@ -39,6 +39,13 @@
     const path = location.pathname;
     const story = path.match(/^\/stories\/[^/]+\/(\d+)/);
     if (story) return story[1];
+    // In the reels viewer the address can lag behind the reel on screen: its overlay id carries the media id itself.
+    if (/^\/reels?\//.test(path)) {
+      const on = nearCenter([...document.querySelectorAll('.vertically-snappable')]);
+      const o = on && on.querySelector('[id^="clipsoverlay"]');
+      const m = o && o.id.match(/^clipsoverlay(\d+)_/);
+      if (m) return m[1];
+    }
     const direct = /^\/reels\/?$/.test(path) ? null : codeIn(path);
     if (direct) return shortcodeToId(direct);
     const item = nearCenter([...document.querySelectorAll('.vertically-snappable, article')]);

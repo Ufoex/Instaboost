@@ -1334,6 +1334,14 @@ fun InstaboostWebView(
             cookieManager.setAcceptThirdPartyCookies(webView, false)
             cookieManager.flush()
             hardenWebView(state, webView)
+            // Script that must run before Instagram's own (see res/raw/early_gate.js): it lets the reel swipe
+            // see pointer events first. Needs a recent WebView; without it the swipe stays Instagram's own.
+            if (androidx.webkit.WebViewFeature.isFeatureSupported(androidx.webkit.WebViewFeature.DOCUMENT_START_SCRIPT)) {
+                runCatching {
+                    val early = webView.context.resources.openRawResource(R.raw.early_gate).bufferedReader().use { it.readText() }
+                    androidx.webkit.WebViewCompat.addDocumentStartJavaScript(webView, early, setOf("https://www.instagram.com"))
+                }
+            }
             mainWebView = webView
             // Instagram plays a reel only while its page has the focus (document.hasFocus()); without it
             // every reel that lands is paused again at 0:00. Give the WebView the input focus.
