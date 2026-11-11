@@ -83,6 +83,7 @@
       window.__igFromFeed = true;
       history.pushState({}, '', '/reels/' + code + '/');
       window.dispatchEvent(new PopStateEvent('popstate', { state: {} }));
+      if (window.__mbReelTick) window.__mbReelTick();   // the reel buttons show now, not on the next tick
     }, WAIT);
   }, true);
 })();

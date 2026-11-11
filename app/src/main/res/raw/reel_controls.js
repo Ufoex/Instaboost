@@ -843,8 +843,9 @@
         const active = inReels ? activeVideo() : null;
 
 
-        // hide-icons button: next to the download button when it exists
-        if (active) {
+        // hide-icons button: next to the download button when it exists. Shown as soon as the address is a
+        // reel, without waiting for Instagram to build the video (1-3 s after tapping a feed video).
+        if (inReels) {
             if (!hideBtn || !hideBtn.isConnected) buildHideBtn();
             const dlBtn = document.getElementById(DLID);
             // A column under the download button (a row would cover Facebook's own header icons).
@@ -872,7 +873,7 @@
             layoutBtns(items, baseTop, baseLeft);
             // Reading layout right after the bar showed or hid forces a full recalculation of Instagram's page
             // (hundreds of ms): the heavy parts wait until the bar's animation is over.
-            if (light !== true && Date.now() - barChangedAt > 500) { dodge(items, active); centerVideos(); markIcons(active); }
+            if (active && light !== true && Date.now() - barChangedAt > 500) { dodge(items, active); centerVideos(); markIcons(active); }
         } else {
             if (editing) endEdit(false);
             // Outside the reels the download button is placed by download_content.js alone: clearing its position
@@ -919,6 +920,7 @@
         muteBtn.innerHTML = svg(v.muted ? ICON.mute : ICON.vol);
     };
     setInterval(() => tick(), 250);
+    window.__mbReelTick = () => tick();   // open_video.js: right after it opens the viewer
     // On play / pause everything moves together (bar, lift, icons) instead of on the next tick.
     ['play', 'pause'].forEach(n => document.addEventListener(n, (e) => {
         if (e.target instanceof HTMLVideoElement) requestAnimationFrame(() => tick(true));
