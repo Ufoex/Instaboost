@@ -80,7 +80,9 @@
     scanQueued = false;
     if (Date.now() > quietUntil) return;
     const v = centerVideo();
-    const item = v && v.closest('.vertically-snappable');
+    // (a reel that has not mounted its video yet still shows the badge: take the box at the centre)
+    const item = (v && v.closest('.vertically-snappable')) ||
+      [...document.querySelectorAll('.vertically-snappable')].find(i => { const r = i.getBoundingClientRect(); return r.top < innerHeight / 2 && r.bottom > innerHeight / 2; });
     if (!item) return;
     item.querySelectorAll('svg').forEach(svg => {
       if (svg.closest('[id^="mb-reel-"], #ib-download')) return;
@@ -102,6 +104,17 @@
     restoreTimer = setTimeout(restoreCircles, 950);
   };
 
+  // Right after a swipe Instagram still takes a short touch as its own tap (volume badge) but no `click` follows
+  // (the list was still moving), so the badge is also hidden after any short, still touch.
+  let down = null;
+  document.addEventListener('pointerdown', (e) => { down = e.isTrusted && e.isPrimary ? { x: e.clientX, y: e.clientY, t: Date.now() } : null; }, true);
+  document.addEventListener('pointerup', (e) => {
+    const d = down; down = null;
+    if (!d || !inReel() || Date.now() - d.t > 400 || Math.abs(e.clientX - d.x) > 15 || Math.abs(e.clientY - d.y) > 15) return;
+    if (e.target.closest && e.target.closest('button, a, input, [role="button"], [role="link"], [role="slider"], [id^="mb-reel-"], #ib-download')) return;
+    armQuiet();
+  }, true);
+
   // --- tap = pause / resume. A double tap is left to Instagram (like) and to the gestures script
   // (skip back / forward), so the pause waits a moment and is dropped by a second tap. A second tap that
   // comes a little late (after the pause or resume was already done) is still a double tap: the video is
@@ -119,7 +132,7 @@
     if (e.target.closest && e.target.closest('button, a, input, [role="button"], [role="link"], [role="slider"], [id^="mb-reel-"], #ib-download')) return;
     if (timer) { clearTimeout(timer); timer = 0; endQuiet(); return; }                    // second tap: like / skip
     const v = centerVideo();
-    if (!v) return;
+    if (!v) { armQuiet(); return; }                                                       // tapped before the video is there
     if (lastToggle && lastToggle.v === v && Date.now() - lastToggle.clickAt < LATE) {      // late second tap
       const l = lastToggle; lastToggle = null;
       endQuiet();

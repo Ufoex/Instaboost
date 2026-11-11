@@ -217,6 +217,12 @@
     // Hide mode, for the reels that are not the one on screen (the ones scrolling in): everything around
     // their video is hidden too, so their icons never show for an instant when they arrive. Only the
     // reel on screen gets the tap-to-pause treatment (markIcons).
+    // The poster of a reel that has not started (a big picture inside the same box as its avatar and caption): the
+    // box is walked into, not hidden, or the reel coming in while swiping would be black.
+    const holdsPoster = (e) => (e.tagName === 'IMG' ? [e] : [...e.querySelectorAll('img')]).some(i => {
+        const r = i.getBoundingClientRect();
+        return r.width >= 0.8 * innerWidth && r.height >= 0.4 * innerHeight;
+    });
     const markNeighbors = (cur, activeCont) => {
         document.querySelectorAll('.vertically-snappable').forEach(it => {
             if (it === activeCont) return;
@@ -224,7 +230,7 @@
             if (!nv) return;
             const walkN = (node) => {
                 for (const c of node.children) {
-                    if (c.contains(nv)) { walkN(c); continue; }
+                    if (c.contains(nv) || holdsPoster(c)) { walkN(c); continue; }
                     if (!c.hasAttribute('data-mb-hid')) { c.removeAttribute('data-mb-fade'); c.setAttribute('data-mb-hid', ''); }
                     cur.add(c);
                 }
@@ -285,7 +291,7 @@
         // Desktop lists every reel as a sibling: keep all their videos visible (only the UI around them
         // is hidden) or the neighbouring reels would be blank while they scroll in.
         const keep = [v, seekbox, ...(window.isDesktopMode && window.isDesktopMode() ? document.querySelectorAll('video') : [])].filter(Boolean);
-        const holdsKept = (e) => keep.some(k => e.contains(k));
+        const holdsKept = (e) => keep.some(k => e.contains(k)) || holdsPoster(e);
         const hid = (e) => { if (e && !holdsKept(e) && !inSeek(e)) { e.removeAttribute('data-mb-fade'); e.setAttribute('data-mb-hid', ''); cur.add(e); } };
 
         // element under the screen centre: the tap-to-pause surface lives in its ancestors

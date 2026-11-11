@@ -20,6 +20,10 @@
 - Ads in the reels viewer (marked "Sponsored") are now hidden, never unmute and are skipped automatically.
 - Fix: auto-scroll no longer moves the list while your finger is on it, which made a reel jump to the next one halfway through a swipe and could leave the viewer stuck between two reels. A viewer left between two reels now realigns by itself.
 - Opening a video from the feed: the reel buttons (download, fit, auto-scroll, audio, hide) now show right away instead of waiting for Instagram to load the reel.
+- Ads in the reels viewer are hidden before they scroll in and skipped faster; while one is on screen it shows "Ad blocked".
+- Fix: with the buttons hidden, the reel coming in while you swipe no longer disappears.
+- Fix: Instagram's audio icon no longer flashes when you tap right after swiping.
+- Swiping reels: letting go now slides the list into place instead of jumping, and a slow drag follows your finger more closely.
 
 <!-- lang:es -->
 ### Novedades
@@ -41,3 +45,7 @@
 - Los anuncios del visor de reels (marcados «Publicidad») ahora se ocultan, nunca activan el sonido y se saltan solos.
 - Corrección: el desplazamiento automático ya no mueve la lista mientras tienes el dedo en la pantalla, lo que hacía saltar al siguiente reel a la mitad de un deslizamiento y podía dejar el visor atorado entre dos reels. Un visor que queda entre dos reels ahora se realinea solo.
 - Al abrir un video del feed: los botones del visor (descarga, ajuste, desplazamiento automático, audio, ocultar) ahora aparecen de inmediato en vez de esperar a que Instagram cargue el reel.
+- Los anuncios del visor de reels se ocultan antes de llegar a la pantalla y se saltan más rápido; mientras uno está a la vista muestra «Anuncio bloqueado».
+- Corrección: con los botones ocultos, el reel que entra mientras deslizas ya no desaparece.
+- Corrección: el icono de audio de Instagram ya no aparece de golpe al tocar justo después de deslizar.
+- Deslizar reels: al soltar, la lista se acomoda deslizándose en vez de saltar, y un arrastre lento sigue mejor al dedo.
