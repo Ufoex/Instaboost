@@ -13,6 +13,8 @@ Instaboost es un cliente ligero de Instagram para Android. Envuelve el sitio web
 [![Última versión](https://img.shields.io/github/v/release/Ufoex/Instaboost?label=descargar)](https://github.com/Ufoex/Instaboost/releases/latest)
 [![Descargas](https://img.shields.io/github/downloads/Ufoex/Instaboost/total?label=descargas)](https://grev.shehryar.ae/?owner=Ufoex&repo=Instaboost)
 
+📘 También disponible: [**Faceboost**](https://github.com/Ufoex/Faceboost), la misma idea para Facebook.
+
 ## Funciones
 
 - Oculta historias, publicaciones sugeridas, personas sugeridas, Reels y publicaciones con etiqueta de IA.
