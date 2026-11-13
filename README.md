@@ -17,6 +17,7 @@ Instaboost is a light Android client for Instagram. It wraps the mobile Instagra
 </p>
 
 📘 Also available: [**Faceboost**](https://github.com/Ufoex/Faceboost), the same idea for Facebook.
+🎵 And [**Spotiboost**](https://github.com/Ufoex/Spotiboost), for Spotify.
 
 ## Features
 
