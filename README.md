@@ -11,7 +11,10 @@ Tell us about it: open an issue and describe what happened or what you would lik
 Instaboost is a light Android client for Instagram. It wraps the mobile Instagram website and adds settings and a better reel viewer on top of it.
 
 [![Latest release](https://img.shields.io/github/v/release/Ufoex/Instaboost?label=download)](https://github.com/Ufoex/Instaboost/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/Ufoex/Instaboost/total?label=downloads)](https://grev.shehryar.ae/?owner=Ufoex&repo=Instaboost)
+
+<p align="middle">
+    <a href='https://grev.shehryar.ae/?owner=Ufoex&repo=Instaboost'><img alt='Downloads count' height='40' src='https://img.shields.io/github/downloads/Ufoex/Instaboost/total?style=for-the-badge&logo=github&label=Downloads&color=1877F2&labelColor=24292F'/></a>
+</p>
 
 📘 Also available: [**Faceboost**](https://github.com/Ufoex/Faceboost), the same idea for Facebook.
 
