@@ -1,23 +1,19 @@
-# Instaboost
+<h1 align="center">Instaboost</h1>
 
-**English** · [Español](README.es.md)
+<p align="center">Light Android client for Instagram with a better reel viewer.</p>
 
-## 🙋 Have a problem or a suggestion?
+<p align="center"><b>English</b> · <a href="README.es.md">Español</a></p>
 
-Tell us about it: open an issue and describe what happened or what you would like.
-
-[![Open an issue](https://img.shields.io/badge/Open%20an%20issue-D73A4A?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ufoex/Instaboost/issues/new/choose)
-
-Instaboost is a light Android client for Instagram. It wraps the mobile Instagram website and adds settings and a better reel viewer on top of it.
-
-[![Latest release](https://img.shields.io/github/v/release/Ufoex/Instaboost?label=download)](https://github.com/Ufoex/Instaboost/releases/latest)
-
-<p align="middle">
-    <a href='https://grev.shehryar.ae/?owner=Ufoex&repo=Instaboost'><img alt='Downloads count' height='40' src='https://img.shields.io/github/downloads/Ufoex/Instaboost/total?style=for-the-badge&logo=github&label=Downloads&color=1877F2&labelColor=24292F'/></a>
+<p align="center">
+    <a href='https://github.com/Ufoex/Instaboost/releases/latest'><img alt='Download' height='40' src='https://img.shields.io/github/v/release/Ufoex/Instaboost?style=for-the-badge&logo=github&label=Download&color=E4405F&labelColor=24292F'/></a> <a href='https://grev.shehryar.ae/?owner=Ufoex&repo=Instaboost'><img alt='Downloads' height='40' src='https://img.shields.io/github/downloads/Ufoex/Instaboost/total?style=for-the-badge&logo=github&label=Downloads&color=E4405F&labelColor=24292F'/></a> <a href='https://github.com/Ufoex/Instaboost/issues/new/choose'><img alt='Open an issue' height='40' src='https://img.shields.io/badge/Open%20an%20issue-D73A4A?style=for-the-badge&logo=github&logoColor=white'/></a> <a href='https://buymeacoffee.com/masterllamk'><img alt='Buy me a coffee' height='40' src='https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black'/></a>
 </p>
 
-📘 Also available: [**Faceboost**](https://github.com/Ufoex/Faceboost), the same idea for Facebook.
-🎵 And [**Spotiboost**](https://github.com/Ufoex/Spotiboost), for Spotify.
+<p align="center">
+    📘 Also available: <a href='https://github.com/Ufoex/Faceboost'><b>Faceboost</b></a>, the same idea for Facebook.<br>
+    🎵 And <a href='https://github.com/Ufoex/Spotiboost'><b>Spotiboost</b></a>, for Spotify.
+</p>
+
+Instaboost is a light Android client for Instagram. It wraps the mobile Instagram website and adds settings and a better reel viewer on top of it.
 
 ## Features
 
@@ -45,6 +41,10 @@ Requires Android 8.0 (API 26) or newer.
 ```
 
 Every push to `main` builds a signed release in CI and publishes it as a GitHub release. The release notes come from the newest section of [CHANGE.md](CHANGE.md), which has an English and a Spanish block.
+
+## Support
+
+The app is free and has no ads. If it is useful to you and you want to say thanks, you can [buy me a coffee](https://buymeacoffee.com/masterllamk).
 
 ## License
 
