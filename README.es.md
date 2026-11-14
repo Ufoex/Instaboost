@@ -5,12 +5,36 @@
 <p align="center"><a href="README.md">English</a> · <b>Español</b></p>
 
 <p align="center">
-    <a href='https://github.com/Ufoex/Instaboost/releases/latest'><img alt='Descargar' height='40' src='https://img.shields.io/github/v/release/Ufoex/Instaboost?style=for-the-badge&logo=github&label=Descargar&color=E4405F&labelColor=24292F'/></a> <a href='https://grev.shehryar.ae/?owner=Ufoex&repo=Instaboost'><img alt='Downloads' height='40' src='https://img.shields.io/github/downloads/Ufoex/Instaboost/total?style=for-the-badge&logo=github&label=Downloads&color=E4405F&labelColor=24292F'/></a> <a href='https://github.com/Ufoex/Instaboost/issues/new/choose'><img alt='Abrir un issue' height='40' src='https://img.shields.io/badge/Abrir%20un%20issue-D73A4A?style=for-the-badge&logo=github&logoColor=white'/></a> <a href='https://buymeacoffee.com/masterllamk'><img alt='Invítame un café' height='40' src='https://img.shields.io/badge/Inv%C3%ADtame%20un%20caf%C3%A9-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black'/></a>
-</p>
-
-<p align="center">
     📘 También disponible: <a href='https://github.com/Ufoex/Faceboost'><b>Faceboost</b></a>, la misma idea para Facebook.<br>
     🎵 Y <a href='https://github.com/Ufoex/Spotiboost'><b>Spotiboost</b></a>, para Spotify.
+</p>
+
+<h3 align="center">📥 Descargar</h3>
+
+<p align="center">
+    Baja el último APK desde la página de versiones e instálalo.<br><br>
+    <a href='https://github.com/Ufoex/Instaboost/releases/latest'><img alt='Descargar' height='40' src='https://img.shields.io/github/v/release/Ufoex/Instaboost?style=for-the-badge&logo=github&label=Descargar&color=E4405F&labelColor=24292F'/></a>
+</p>
+
+<h3 align="center">📊 Descargas</h3>
+
+<p align="center">
+    Número total de veces que se ha descargado la app hasta ahora.<br><br>
+    <a href='https://grev.shehryar.ae/?owner=Ufoex&repo=Instaboost'><img alt='Downloads' height='40' src='https://img.shields.io/github/downloads/Ufoex/Instaboost/total?style=for-the-badge&logo=github&label=Downloads&color=E4405F&labelColor=24292F'/></a>
+</p>
+
+<h3 align="center">🙋 ¿Problema o sugerencia?</h3>
+
+<p align="center">
+    ¿Algo falla o tienes una idea? Abre un issue en GitHub y cuéntame qué pasó o qué te gustaría.<br><br>
+    <a href='https://github.com/Ufoex/Instaboost/issues/new/choose'><img alt='Abrir un issue' height='40' src='https://img.shields.io/badge/Abrir%20un%20issue-D73A4A?style=for-the-badge&logo=github&logoColor=white'/></a>
+</p>
+
+<h3 align="center">☕ ¿Te gusta mi trabajo?</h3>
+
+<p align="center">
+    La app es gratis y no tiene anuncios. Si te gusta, puedes apoyarme con un café.<br><br>
+    <a href='https://buymeacoffee.com/masterllamk'><img alt='Invítame un café' height='40' src='https://img.shields.io/badge/Inv%C3%ADtame%20un%20caf%C3%A9-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black'/></a>
 </p>
 
 Instaboost es un cliente ligero de Instagram para Android. Envuelve el sitio web móvil de Instagram y le añade ajustes y un mejor visor de reels.
