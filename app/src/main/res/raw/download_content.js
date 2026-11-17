@@ -7,7 +7,7 @@
   window.__igDownloader = true;
   const BTN_ID = 'ib-download';
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-  const ICON = '<svg viewBox="0 0 24 24" width="24" height="24" fill="#fff"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>';
+  const ICON = '<svg viewBox="0 0 24 24" width="26" height="26" fill="#fff"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>';
 
   const dlCall = (name, a, b) => {
     if (window.InstaboostDownloads) window.InstaboostDownloads.postMessage(JSON.stringify({ call: name, a: a, b: b }));
@@ -88,8 +88,8 @@
   btn.id = BTN_ID;
   btn.setAttribute('aria-label', 'Download content');
   btn.innerHTML = ICON;
-  btn.style.cssText = 'position:fixed;right:12px;z-index:2147483000;width:44px;height:44px;border:0;border-radius:50%;' +
-    'background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:0;opacity:.85';
+  btn.style.cssText = 'position:fixed;right:12px;z-index:2147483000;width:40px;height:40px;border:0;border-radius:50%;' +
+    'background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:0';
   btn.addEventListener('click', (e) => { e.stopPropagation(); download(); });
   document.body.appendChild(btn);
 

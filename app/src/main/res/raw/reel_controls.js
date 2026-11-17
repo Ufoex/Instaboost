@@ -137,11 +137,16 @@
         '#mb-reel-controls svg,#mb-reel-seek{filter:drop-shadow(0 1px 2px rgba(0,0,0,.85))}' +
         // the seek bar is white (played part and thumb); the unplayed part stays a dim white
         '#mb-reel-seek{accent-color:#fff;color-scheme:dark}' +
+        // Instagram's video box is 45 px taller than the area above the tab bar, so its user, caption and audio chip
+        // ended up under the bar: the box takes the height of the reel.
+        '.vertically-snappable > div > div,.vertically-snappable > div > div > div{height:100% !important;max-height:100% !important}' +
         'html.mb-fit-contain video{object-fit:contain !important}' +
         'html.mb-fit-cover video{object-fit:cover !important}';
     document.head.appendChild(style);
     // Button feedback: shrink while pressed, small bounce on tap.
-    style.textContent += '#mb-reel-hide,#mb-reel-fit,#mb-reel-auto,#mb-reel-audio,#ib-download{transition:transform .12s ease-out,background .2s,left .2s ease,top .2s ease,translate .2s ease}' +
+    style.textContent += '#mb-reel-hide,#mb-reel-fit,#mb-reel-auto,#mb-reel-audio,#ib-download{transition:transform .12s ease-out,background .2s,left .2s ease,top .2s ease,translate .2s ease,opacity .3s ease}' +
+        // hide mode: only the eye is left, the other buttons fade out and stop taking taps
+        'html.mb-hide-reel-ui #mb-reel-fit,html.mb-hide-reel-ui #mb-reel-auto,html.mb-hide-reel-ui #mb-reel-audio,html.mb-hide-reel-ui #ib-download{opacity:0 !important;pointer-events:none !important}' +
         '#mb-reel-hide:active,#mb-reel-fit:active,#mb-reel-auto:active,#mb-reel-audio:active{transform:scale(.82);background:rgba(255,255,255,.28) !important}';
     document.addEventListener('click', (e) => {
         const b = e.target.closest && e.target.closest('#mb-reel-hide,#mb-reel-fit,#mb-reel-auto,#mb-reel-audio');

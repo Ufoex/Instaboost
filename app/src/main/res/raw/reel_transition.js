@@ -50,6 +50,22 @@
     ['touchstart', 'touchmove', 'touchend', 'scroll'].forEach(n => document.addEventListener(n, () => { if (inReel() && !raf) { prev = null; raf = requestAnimationFrame(loop); } }, { capture: true, passive: true }));
   }
 
+  // --- sensitivity: Instagram is shown the finger SENS times as far from where it landed, so a shorter swipe changes
+  // reel. What is drawn is still the finger itself (the block below makes up the difference). 1 = as it is.
+  const SENS = 1.25;
+  let g = null;
+  const setY = (e, y) => { ['clientY', 'pageY', 'screenY', 'y'].forEach(k => { try { Object.defineProperty(e, k, { value: y, configurable: true }); } catch (_) {} }); };
+  window.__igGate = (e) => {
+    if (e.pointerType !== 'touch' || !e.isPrimary || !inReel()) return false;
+    if (e.type === 'pointerdown') {
+      g = e.target.closest && e.target.closest('input, textarea, select, [role="slider"], [role="dialog"], [role="menu"], [id^="mb-reel-"], #ib-download') ? null : e.clientY;
+    } else if (g !== null) {
+      setY(e, g + (e.clientY - g) * SENS);
+      if (e.type !== 'pointermove') g = null;
+    }
+    return false;
+  };
+
   // --- no lag: Instagram eases the list towards the finger (it trails by ~150 ms, and it changes reel by itself past a point).
   // While a finger is down the reels are shown exactly under it: the `translate` property (it adds to Instagram's own
   // transform, which is left alone) makes up the difference. On release that difference eases out as Instagram settles.
