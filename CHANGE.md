@@ -1,3 +1,21 @@
+## Instaboost v1.0.10
+
+<!-- lang:en -->
+### What's new
+
+- With the icons hidden, only the eye is left: the download, fit, auto-scroll and audio buttons fade out and stop taking taps.
+- The download button now matches the size of the other reel buttons.
+- Fix: the bottom bar no longer covers the user, caption and audio chip of a reel.
+- Swiping reels changes reel with a slightly shorter swipe.
+
+<!-- lang:es -->
+### Novedades
+
+- Con los iconos ocultos solo queda el ojo: los botones de descargar, ajustar, auto-scroll y audio se desvanecen y dejan de recibir toques.
+- El botón de descargar ahora tiene el mismo tamaño que los demás botones del visor.
+- Corrección: la barra de abajo ya no tapa el usuario, la descripción ni el chip de audio de un reel.
+- Al deslizar reels, el cambio de reel se activa con un deslizamiento un poco más corto.
+
 ## Instaboost v1.0.9
 
 <!-- lang:en -->
