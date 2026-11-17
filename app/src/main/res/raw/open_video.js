@@ -30,25 +30,33 @@
     } catch (e) { return null; }
   };
   const showCover = (f) => {
-    if (!f) return;
     const el = document.createElement('div');
     el.id = 'ig-open-cover';
     el.style.cssText = 'position:fixed;inset:0;z-index:2147482000;background:#000;overflow:hidden';
-    const img = document.createElement('img');
-    img.src = f.src;
-    img.style.cssText = 'position:absolute;object-fit:cover;border-radius:0';
-    // where it ends: the whole frame, as large as fits the screen, centred
-    const vw = innerWidth, vh = innerHeight;
-    const w = Math.min(vw, vh * f.ratio), h = w / f.ratio;
-    const to = { left: (vw - w) / 2 + 'px', top: (vh - h) / 2 + 'px', width: w + 'px', height: h + 'px' };
-    const from = { left: f.rect.l + 'px', top: f.rect.t + 'px', width: f.rect.w + 'px', height: f.rect.h + 'px' };
-    Object.assign(img.style, from);
-    el.appendChild(img);
     el.style.background = 'rgba(0,0,0,0)';
-    document.body.appendChild(el);
     const ease = { duration: 280, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' };
+    if (f) {
+      const img = document.createElement('img');
+      img.src = f.src;
+      img.style.cssText = 'position:absolute;object-fit:cover;border-radius:0';
+      // where it ends: the whole frame, as large as fits the screen, centred
+      const vw = innerWidth, vh = innerHeight;
+      const w = Math.min(vw, vh * f.ratio), h = w / f.ratio;
+      const to = { left: (vw - w) / 2 + 'px', top: (vh - h) / 2 + 'px', width: w + 'px', height: h + 'px' };
+      const from = { left: f.rect.l + 'px', top: f.rect.t + 'px', width: f.rect.w + 'px', height: f.rect.h + 'px' };
+      Object.assign(img.style, from);
+      el.appendChild(img);
+      img.animate([from, to], ease);
+    }
+    // a spinner over the frame, shown only if the viewer takes a moment (so a fast load does not flash it)
+    const sp = document.createElement('div');
+    sp.style.cssText = 'position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;box-sizing:border-box;' +
+      'border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;opacity:0;filter:drop-shadow(0 1px 4px rgba(0,0,0,.6))';
+    el.appendChild(sp);
+    sp.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }], { duration: 800, iterations: Infinity });
+    setTimeout(() => { sp.style.transition = 'opacity .2s'; sp.style.opacity = '1'; }, 350);
+    document.body.appendChild(el);
     el.animate([{ background: 'rgba(0,0,0,0)' }, { background: 'rgba(0,0,0,1)' }], ease);
-    img.animate([from, to], ease);
     const t0 = Date.now();
     const done = () => { el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' }); setTimeout(() => el.remove(), 280); };
     (function wait() {
