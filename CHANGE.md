@@ -1,3 +1,19 @@
+## Instaboost v1.0.9
+
+<!-- lang:en -->
+### What's new
+
+- Swiping reels: the reel now stays exactly under your finger, with no delay, and no longer jumps when you drag a long way.
+- Fix: the fade between reels no longer flashes in brightness halfway through the swipe.
+- Opening a video from the feed now shows a loading spinner over the video until the reels viewer is ready.
+
+<!-- lang:es -->
+### Novedades
+
+- Deslizar reels: el reel se queda exactamente bajo el dedo, sin retardo, y ya no da saltos cuando arrastras mucho.
+- Corrección: el fundido entre reels ya no cambia de brillo de golpe a la mitad del deslizamiento.
+- Al abrir un video desde el feed se muestra un indicador de carga sobre el video hasta que el visor de reels está listo.
+
 ## Instaboost v1.0.7
 
 <!-- lang:en -->
