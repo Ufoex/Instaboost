@@ -1,10 +1,6 @@
 // Swiping between reels. Instagram does every change itself (it keeps its own idea of which reel is current, so moving the
 // list from here puts it out of step: the address stops following, going back stops working). This script only
-//  - stops it from changing reel by itself halfway through a SLOW drag, with the finger still down: while the finger moves
-//    slowly, Instagram is shown a position that follows it 1:1 for the first part and then creeps towards (never reaching)
-//    half a reel. A quick flick (or a finger that speeds up) goes through untouched, and Instagram changes reel as it
-//    always did. This works through res/raw/early_gate.js, which runs before Instagram's scripts and calls
-//    window.__igGate (below) first for every pointer event; without it (an old WebView) nothing changes.
+//  - shows the reels exactly under the finger (Instagram trails it by ~150 ms), whatever the list is doing.
 //  - cross-fades the reels as they move: the one leaving becomes transparent while the next is revealed from dark.
 //  - hides the ads of the viewer (when the ad blocker is on), keeps them silent and swipes past one that comes to rest on
 //    the screen. The swipe is made by the app with real touch events (the page cannot make trusted ones).
@@ -13,70 +9,11 @@
   if (window.__igReelTransition) return;
   window.__igReelTransition = true;
 
-  const X1 = 0.40, X2 = 1.0, CAP = 0.49;    // fractions of a reel's height: 1:1 up to X1, then creeping towards CAP
-  const FLICK = 0.45;                        // px per ms: at least this fast and the touch is left to Instagram
-  const LEAD = 90, MAXLEAD = 0.12;           // Instagram eases the list towards the finger (it trails it by ~120 ms): it is shown the finger
-                                             // LEAD ms ahead (capped at MAXLEAD of a reel), so the list keeps up. 0 = off.
   const inReel = () => /^\/reels?\//.test(location.pathname);
   const items = () => [...document.querySelectorAll('.vertically-snappable')];
 
-  // --- the gate: where Instagram thinks a slow finger is
-  let t = null;   // { y0, H, free, samples }
-  const setY = (e, y) => { ['clientY', 'pageY', 'screenY', 'y'].forEach(k => { try { Object.defineProperty(e, k, { value: y, configurable: true }); } catch (_) {} }); };
-  const perceived = (d, H) => {
-    const x = Math.min(1, Math.abs(d) / H);
-    const p = x <= X1 ? x : X1 + (x - X1) * ((CAP - X1) / (X2 - X1));
-    return Math.sign(d) * p * H;
-  };
-  window.__igGate = (e) => {
-    if (e.pointerType !== 'touch' || !e.isPrimary || !inReel()) return false;
-    if (e.type === 'pointerdown') {
-      t = null;
-      if (e.target.closest && e.target.closest('input, textarea, select, [role="slider"], [role="dialog"], [role="menu"], [id^="mb-reel-"], #ib-download')) return false;
-      let H = 0, bd = Infinity;
-      items().forEach(it => { const r = it.getBoundingClientRect(); if (Math.abs(r.top) < bd) { bd = Math.abs(r.top); H = r.height; } });
-      if (!H || bd > 4) return false;
-      t = { y0: e.clientY, H, free: false, moves: [] };
-      return false;
-    }
-    if (!t) return false;
-    if (e.type === 'pointermove') {
-      const now = performance.now();
-      t.moves.push([now, e.clientY]);
-      if (t.moves.length > 6) t.moves.shift();
-      // Speed between moves only (the first jump after touching the screen always looks fast). A quick flick is
-      // Instagram's own: from then on this touch goes through untouched.
-      if (t.moves.length >= 3) {
-        const first = t.moves.find(p => now - p[0] < 100) || t.moves[0];
-        const v = (e.clientY - first[1]) / Math.max(1, now - first[0]);
-        if (first !== t.moves[t.moves.length - 1] && Math.abs(v) >= FLICK) t.free = true;
-      }
-      let d = e.clientY - t.y0;
-      t.lead = 0;
-      if (!t.free) {
-        if (t.moves.length >= 2) {
-          const first = t.moves.find(p => now - p[0] < 90) || t.moves[0];
-          const v = (e.clientY - first[1]) / Math.max(1, now - first[0]);
-          t.lead = Math.max(-MAXLEAD * t.H, Math.min(MAXLEAD * t.H, v * LEAD));
-        }
-        d += t.lead;
-        if (Math.abs(d) > X1 * t.H) d = Math.sign(d) * Math.abs(perceived(d, t.H));
-        if (d !== e.clientY - t.y0) setY(e, t.y0 + d);
-      }
-      return false;
-    }
-    if (!t.free && t.moves.length) {                                                     // slow release: shown where Instagram last saw it
-      const raw = t.moves[t.moves.length - 1][1] - t.y0;
-      let d = raw + (t.lead || 0);
-      if (Math.abs(d) > X1 * t.H) d = perceived(d, t.H);
-      if (d !== raw) setY(e, t.y0 + d);
-    }
-    t = null;
-    return false;
-  };
-
   // --- the cross-fade: how much of a reel shows decides its brightness
-  const fadeIn = (visible) => Math.max(0, Math.min(1, visible * 1.18));
+  const fadeIn = (visible) => Math.max(0, Math.min(1, visible * 0.82));
   const fadeOut = (a) => Math.max(0, Math.min(1, 1 - a * 1.18));
   const opacityFor = (p) => { const a = Math.abs(p); return a <= 0.5 ? fadeOut(a) : fadeIn(1 - a); };
   {
@@ -111,6 +48,60 @@
       if (moving || Date.now() < flipUntil || (window.__igTouch && window.__igTouch.down)) raf = requestAnimationFrame(loop);
     };
     ['touchstart', 'touchmove', 'touchend', 'scroll'].forEach(n => document.addEventListener(n, () => { if (inReel() && !raf) { prev = null; raf = requestAnimationFrame(loop); } }, { capture: true, passive: true }));
+  }
+
+  // --- no lag: Instagram eases the list towards the finger (it trails by ~150 ms, and it changes reel by itself past a point).
+  // While a finger is down the reels are shown exactly under it: the `translate` property (it adds to Instagram's own
+  // transform, which is left alone) makes up the difference. On release that difference eases out as Instagram settles.
+  {
+    const EASE = 140;
+    let d = null, rel = null, raf = 0;
+    const put = (it, v) => { it.__ibT = v; if (v) it.style.setProperty('translate', '0 ' + v + 'px'); else it.style.removeProperty('translate'); };
+    const igTop = (it) => it.getBoundingClientRect().top - (it.__ibT || 0);      // where Instagram has put it
+    const follow = (y) => {
+      d.dy = y - d.y0;
+      // Instagram rebuilds its list when it changes reel mid-drag: the new elements take over the shift in use
+      items().forEach(it => {
+        if (d.base.has(it)) return;
+        const r = it.getBoundingClientRect();
+        if (r.bottom > -2 * r.height && r.top < innerHeight + 2 * r.height) d.base.set(it, r.top + d.t - d.dy);
+      });
+      d.base.forEach((b, it) => { if (it.isConnected) put(it, d.t = b + d.dy - igTop(it)); });
+    };
+    const settle = () => {
+      raf = 0;
+      const k = Math.min(1, (performance.now() - rel.t0) / EASE), e = 1 - Math.pow(1 - k, 3);
+      rel.from.forEach((v0, it) => { if (it.isConnected) put(it, k >= 1 ? 0 : (v0 - igTop(it)) * (1 - e)); });
+      if (k < 1) raf = requestAnimationFrame(settle);
+    };
+    const stop = () => {
+      if (!d) return;
+      const from = new Map();
+      d.base.forEach((b, it) => { if (it.isConnected && it.__ibT) from.set(it, it.getBoundingClientRect().top); });
+      d = null; rel = { t0: performance.now(), from };
+      if (!raf) raf = requestAnimationFrame(settle);
+    };
+    document.addEventListener('touchstart', (e) => {
+      if (d) stop();
+      if (e.touches.length !== 1 || !inReel() || (e.target.closest && e.target.closest('input, textarea, select, [role="slider"], [role="dialog"], [role="menu"], [id^="mb-reel-"], #ib-download'))) return;
+      if (raf) { cancelAnimationFrame(raf); raf = 0; rel.from.forEach((_, it) => put(it, 0)); rel = null; }
+      const base = new Map();
+      items().forEach(it => { const r = it.getBoundingClientRect(); if (r.bottom > -2 * r.height && r.top < innerHeight + 2 * r.height) base.set(it, r.top); });
+      d = { y0: e.touches[0].clientY, y: e.touches[0].clientY, dy: 0, t: 0, base };
+    }, { capture: true, passive: true });
+    // Instagram keeps moving its list between touch events (its easing, and its change of reel): the shift is worked out
+    // again every frame, in a callback asked for after its own, so what is drawn is always the finger.
+    let loop = 0;
+    const tick = () => { if (d) { follow(d.y); requestAnimationFrame(tick); } else loop = 0; };
+    document.addEventListener('touchmove', (e) => {
+      if (!d) return;
+      if (e.touches.length !== 1) return stop();
+      d.y = e.touches[0].clientY;
+      follow(d.y);
+      requestAnimationFrame(() => { if (d) follow(d.y); });   // asked for after Instagram's own callbacks of this frame
+      if (!loop) { loop = 1; requestAnimationFrame(tick); }
+    }, { capture: true, passive: true });
+    ['touchend', 'touchcancel'].forEach(n => document.addEventListener(n, stop, { capture: true, passive: true }));
   }
 
   // --- ads of the viewer and a viewer left between two reels
