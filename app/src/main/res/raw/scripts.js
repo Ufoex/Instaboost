@@ -914,7 +914,7 @@ if (!window._mbAppPromptObserver) {
     });
     // Labels that mark a post, in the usual languages (the page follows the account's language).
     window.IG_SUGGESTED = /^(suggested for you|sugerencias? para ti|sugerido para você|suggéré pour vous|suggestions pour vous|vorgeschlagen für dich|suggerito per te)$/i;
-    window.IG_SPONSORED = /^(sponsored|publicidad|patrocinado|sponsorisé|gesponsert|sponsorizzato)$/i;
+    window.IG_SPONSORED = /^(sponsored|ad|advertisement|publicidad|patrocinado|sponsorisé|gesponsert|sponsorizzato)$/i;
     window.igArticlesWith = (re) => [...document.querySelectorAll('article')].filter(a =>
         [...a.querySelectorAll('span')].some(s => !s.children.length && re.test(s.textContent.trim())));
 })();
