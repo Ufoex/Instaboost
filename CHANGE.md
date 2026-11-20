@@ -1,3 +1,15 @@
+## Instaboost v1.0.11
+
+<!-- lang:en -->
+### What's new
+
+- Fix: the ad blocker now hides the ads Instagram labels "Ad" (it only recognised "Sponsored" and its translations), in the feed and in the reels viewer.
+
+<!-- lang:es -->
+### Novedades
+
+- Corrección: el bloqueador de anuncios ahora oculta los anuncios que Instagram marca como "Ad" (solo reconocía "Sponsored" y sus traducciones), en el feed y en el visor de reels.
+
 ## Instaboost v1.0.10
 
 <!-- lang:en -->
